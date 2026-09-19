@@ -20,8 +20,8 @@ public class PlaceService
 
 public PlaceDTO add(PlaceDTO dto){
     if(dto.rating() > 5){
-        new RatingException("Rating prea mare");
-    } else if(dto.rating() < 0){new RatingException("Rating nu poate fii mai mic ca 0");}
+       throw new RatingException("Rating prea mare");
+    } else if(dto.rating() < 0){ throw new RatingException("Rating nu poate fii mai mic ca 0");}
 
     Place place = Place.builder()
             .name(dto.name())
@@ -66,7 +66,9 @@ public PlaceDTO placeupdate(Long id, PlaceupdateDTO dto){
     }
     else new RatingException("Rating trebuie sa fie mai mic ca 5 si mai mare ca 0");
 
-    return toDto(place);
+Place updated = placerepository.save(place);
+
+    return toDto(updated);
 
 }
 
