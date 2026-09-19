@@ -8,5 +8,5 @@ public record PlaceupdateDTO(
    String address,
    String city,
    Tags tags,
-   String rating
+   Integer rating
 ){}

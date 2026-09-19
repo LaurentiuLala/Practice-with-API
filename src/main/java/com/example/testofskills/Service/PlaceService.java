@@ -20,8 +20,8 @@ public class PlaceService
 
 public PlaceDTO add(PlaceDTO dto){
     if(dto.rating() > 5){
-       throw new RatingException("Rating prea mare");
-    } else if(dto.rating() < 0){ throw new RatingException("Rating nu poate fii mai mic ca 0");}
+       throw new RatingException("Rating too big");
+    } else if(dto.rating() < 0){ throw new RatingException("Rating cannot be lower then 0");}
 
     Place place = Place.builder()
             .name(dto.name())
@@ -36,7 +36,7 @@ return toDto(saved);
 
 public PlaceDTO getplacebyid(Long id){
 
-    Place place = placerepository.findById(id.toString())
+    Place place = placerepository.findById(id)
             .orElseThrow(() -> new PlaceNotFound("No such place exists"));
 
     return toDto(place);
@@ -45,7 +45,7 @@ public PlaceDTO getplacebyid(Long id){
 
 public PlaceDTO placeupdate(Long id, PlaceupdateDTO dto){
 
-    Place place = placerepository.findById(id.toString())
+    Place place = placerepository.findById(id)
             .orElseThrow(()-> new PlaceNotFound("No such place exists"));
 
     if(dto.address() != null) {place.setAddress(dto.address());}
@@ -58,13 +58,11 @@ public PlaceDTO placeupdate(Long id, PlaceupdateDTO dto){
 
 
 
-    if (dto.rating() != null)
-    {
-        int rating = Integer.parseInt(dto.rating());
-     if(rating < 5 && rating > 0)
-         place.setRating(rating);
+    if (dto.rating() != null){
+     if(dto.rating() < 5 && dto.rating() > 0)
+         place.setRating(dto.rating());
     }
-    else new RatingException("Rating trebuie sa fie mai mic ca 5 si mai mare ca 0");
+    else throw new RatingException("Rating must be between 0 and 5");
 
 Place updated = placerepository.save(place);
 
@@ -73,10 +71,10 @@ Place updated = placerepository.save(place);
 }
 
 public void deleteplace(Long id){
-    placerepository.findById(id.toString())
+    placerepository.findById(id)
             .orElseThrow(()-> new PlaceNotFound("No such place exists"));
 
-    placerepository.deleteById(id.toString());
+    placerepository.deleteById(id);
 }
 
 
